@@ -31,7 +31,10 @@ class MainWindow:
         self.frame.pack()
         self.master.protocol("WM_DELETE_WINDOW", close_windows)
         if asyncio.run(check_scmd()) == False:
-            yn = messagebox.askyesno("SteamCMD not found", "SteamCMD not found in the PATH. Do you want to download it to the data directory?")
+            yn = messagebox.askyesno(
+                "SteamCMD not found",
+                "SteamCMD not found in the PATH. Do you want to download it to the data directory?",
+            )
             if yn:
                 self.master.withdraw()
                 self.create_scmd_progress(self.scmd_callback)
@@ -39,7 +42,7 @@ class MainWindow:
     def create_scmd_progress(self, callback):
         self.scmd_window = tk.Toplevel(self.master)
         self.app = SCMD_Progress(self.scmd_window, callback)
-    
+
     def scmd_callback(self):
         self.scmd_window.destroy()
         self.master.deiconify()
@@ -51,6 +54,7 @@ class SCMD_Progress:
         self.frame = tk.Frame(self.master, background="black")
         self.master.title("gmodCSSDownloader - SteamCMD Progress")
         import get_scmd_win
+
         get_scmd_win.main(self.frame, callback)
 
 
@@ -59,6 +63,7 @@ def main():
     root = tk.Tk()
     app = MainWindow(root)
     root.mainloop()
+
 
 if __name__ == "__main__":
     print("Launching GUI as debug...")

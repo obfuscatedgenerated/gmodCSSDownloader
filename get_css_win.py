@@ -6,5 +6,6 @@
 
 # Delete non-assets
 
+
 def main():
     print("Fetching CSS...")
