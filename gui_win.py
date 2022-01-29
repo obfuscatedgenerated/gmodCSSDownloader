@@ -9,7 +9,7 @@ def close_windows():
 
 async def check_scmd():
     proc = await asyncio.create_subprocess_shell(
-        "where b", stderr=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE
+        "where steamcmd", stderr=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE
     )
 
     stdout, stderr = await proc.communicate()
