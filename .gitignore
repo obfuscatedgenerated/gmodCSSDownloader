@@ -3,3 +3,4 @@
 /data/
 /.vscode/
 test_download_bar.py
+/win/__pycache__/

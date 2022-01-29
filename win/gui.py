@@ -2,6 +2,16 @@ import tkinter as tk
 from tkinter import messagebox
 import asyncio
 
+if __name__ == "__main__":
+    print("Importing as debug...")
+    import get_scmd
+    import get_css
+    import write_mount
+else:
+    from win import get_scmd
+    from win import get_css
+    from win import write_mount
+
 
 def close_windows():
     raise SystemExit
@@ -68,8 +78,6 @@ class SCMD_Progress:
         self.master = master
         self.frame = tk.Frame(self.master, background="black")
         self.master.title("gmodCSSDownloader - SteamCMD Progress")
-        import get_scmd_win
-
         get_scmd_win.main(self.master, self.frame, successcallback, abortcallback)
 
 
