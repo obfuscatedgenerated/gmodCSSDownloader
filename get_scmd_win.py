@@ -3,5 +3,6 @@
 
 # Extract it to temp "data" folder
 
-def main():
+# GUI code will create a window with a frame, the frame will be passed to main, this code needs to pack a progressbar and other general info
+def main(frame):
     print("Fetching steamcmd...")
