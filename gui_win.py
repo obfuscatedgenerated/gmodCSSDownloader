@@ -64,13 +64,13 @@ class MainWindow:
 
 
 class SCMD_Progress:
-    def __init__(self, master, callback):
+    def __init__(self, master, successcallback, abortcallback):
         self.master = master
         self.frame = tk.Frame(self.master, background="black")
         self.master.title("gmodCSSDownloader - SteamCMD Progress")
         import get_scmd_win
 
-        get_scmd_win.main(self.frame, callback)
+        get_scmd_win.main(self.master, self.frame, successcallback, abortcallback)
 
 
 def main():
