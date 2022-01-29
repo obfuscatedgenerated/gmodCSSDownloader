@@ -1,5 +1,3 @@
-print("Launching GUI...")
-
 import tkinter as tk
 import asyncio
 
@@ -48,16 +46,10 @@ class Tips:
 
 
 def main():
+    print("Launching GUI...")
     root = tk.Tk()
     app = MainWindow(root)
     root.mainloop()
-
-
-# don't check for main, it's going to be called as a module
-# if __name__ == "__main__":
-#     main()
-
-main()
 
 
 # File select: Where to save?
