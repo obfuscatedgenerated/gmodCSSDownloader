@@ -1,10 +1,31 @@
 print("Launching GUI...")
 
 import tkinter as tk
+import asyncio
 
 def close_windows():
     raise SystemExit
 
+async def check_scmd():
+    proc = await asyncio.create_subprocess_shell(
+        "where steamcmd",
+        stderr=asyncio.subprocess.PIPE,
+        stdout=asyncio.subprocess.PIPE
+    )
+
+    stdout, stderr = await proc.communicate()
+    if stderr:
+        if stderr.startswith(b"INFO:"):
+            return False
+        else:
+            raise Exception(stderr.decode())
+    else:
+        return stdout.decode().strip()
+
+
+# check this before defferring to get_scmd_win
+# print(asyncio.run(check_scmd()))
+# if not false, then skip getting scmd
 
 class MainWindow:
     def __init__(self, master):
