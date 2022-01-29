@@ -21,9 +21,10 @@ async def check_scmd():
     else:
         return stdout.decode().strip()
 
+
 def find_gmod():
-    #HKEY_CURRENT_USER\SOFTWARE\Valve\Steam
-    #SteamPath
+    # HKEY_CURRENT_USER\SOFTWARE\Valve\Steam
+    # SteamPath
     # Use this to find libraryfolders.vdf, then parse it as json, find gmod install path (gmod app id = 4000), then autofill the path into the textbox
     # If failed, see if gmod exists on the default install path
     # If failed, ask the user to manually enter the path
@@ -40,20 +41,26 @@ class MainWindow:
         self.master.protocol("WM_DELETE_WINDOW", close_windows)
         if asyncio.run(check_scmd()) == False:
             yn = messagebox.askyesno(
-                "SteamCMD not found",
+                "Not found",
                 "SteamCMD not found in the PATH. Do you want to download it to the data directory?",
             )
             if yn:
                 self.master.withdraw()
-                self.create_scmd_progress(self.scmd_callback)
+                self.create_scmd_progress(
+                    self.scmd_success_callback, self.scmd_abort_callback
+                )
 
-    def create_scmd_progress(self, callback):
+    def create_scmd_progress(self, successcallback, abortcallback):
         self.scmd_window = tk.Toplevel(self.master)
-        self.app = SCMD_Progress(self.scmd_window, callback)
+        self.app = SCMD_Progress(self.scmd_window, successcallback, abortcallback)
 
-    def scmd_callback(self):
+    def scmd_success_callback(self):
         self.scmd_window.destroy()
         self.master.deiconify()
+
+    def scmd_abort_callback(self):
+        self.master.deiconify()
+        messagebox.showerror("Aborted", "SteamCMD download was aborted!")
 
 
 class SCMD_Progress:
