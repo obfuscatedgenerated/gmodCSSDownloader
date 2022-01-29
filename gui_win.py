@@ -21,6 +21,12 @@ async def check_scmd():
     else:
         return stdout.decode().strip()
 
+def find_steam():
+    #HKEY_CURRENT_USER\SOFTWARE\Valve\Steam
+    #SteamPath
+    # Use this to find libraryfolders.vdf, then parse it as json, find gmod install path (gmod app id = 4000), then autofill the path into the textbox
+    return None
+
 
 class MainWindow:
     def __init__(self, master):
