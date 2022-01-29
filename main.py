@@ -1,5 +1,8 @@
 import os
 
+if not os.path.isdir("./data/"):
+    os.mkdir("./data/")
+
 if os.name == "nt":
     import gui_win
 else:
