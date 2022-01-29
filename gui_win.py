@@ -21,10 +21,12 @@ async def check_scmd():
     else:
         return stdout.decode().strip()
 
-def find_steam():
+def find_gmod():
     #HKEY_CURRENT_USER\SOFTWARE\Valve\Steam
     #SteamPath
     # Use this to find libraryfolders.vdf, then parse it as json, find gmod install path (gmod app id = 4000), then autofill the path into the textbox
+    # If failed, see if gmod exists on the default install path
+    # If failed, ask the user to manually enter the path
     return None
 
 
