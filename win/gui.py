@@ -3,6 +3,8 @@ from tkinter import messagebox
 import asyncio
 import winreg
 
+regtypeReverseLookup = ["REG_NONE","REG_SZ","REG_EXPAND_SZ","REG_BINARY","REG_DWORD_LITTLE_ENDIAN","REG_DWORD_BIGENDIAN","REG_LINK","REG_MULTI_SZ","REG_RESOURCE_LIST","REG_FULL_RESOURCE_DESCRIPTOR","REG_RESOURCE_REQUIREMENTS_LIST","REG_QWORD_LITTLE_ENDIAN"] # REG_DWORD defaults to REG_DWORD_LITTLE_ENDIAN, REG_QWORD defaults to REG_QWORD_LITTLE_ENDIAN
+
 if __name__ == "__main__":
     print("Importing as debug...")
     import get_scmd
@@ -37,8 +39,11 @@ def find_gmod():
     try:
         reg_connection = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
         reg_key = winreg.OpenKey(reg_connection, r"SOFTWARE\\Valve\\Steam")
-        reg_value = winreg.QueryValueEx(reg_key, "SteamPath")[0]
-        print(reg_value)
+        reg_value = winreg.QueryValueEx(reg_key, "SteamPath")
+        if reg_value[1] != winreg.REG_SZ:
+            print("Invalid type for SteamPath. Expected REG_SZ (int: 1), got "+regtypeReverseLookup[reg_value[1]]+" (int: "+str(reg_value[1])+")")
+            raise OSError("Invalid type for SteamPath. Expected REG_SZ (int: 1), got "+regtypeReverseLookup[reg_value[1]]+" (int: "+str(reg_value[1])+")")
+        print(reg_value[0])
         # Use this to find libraryfolders.vdf, then parse it as json, find gmod install path (gmod app id = 4000), then autofill the path into the textbox
     except (OSError, WindowsError, EnvironmentError, FileNotFoundError):
         print("Steam not found, trying next method...")
