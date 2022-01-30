@@ -57,21 +57,27 @@ def find_gmod():
                     print("Searching in "+libfolders[lf]["path"]+"...")
                     if "4000" in libfolders[lf]["apps"]:
                         print("Found gmod app ID! Checking path...")
-                        # Check if path has the game in steamapps common
-                        # If yes, return the path
-                        # If no, ignore and continue
-            except (SyntaxError, AttributeError):
+                        if os.path.isdir(libfolders[lf]["path"]+"\\steamapps\\common\\GarrysMod\\garrysmod"):
+                            print("Found Garry's Mod!")
+                            print(libfolders[lf]["path"]+"\\steamapps\\common\\GarrysMod\\garrysmod")
+                            return libfolders[lf]["path"]+"\\steamapps\\common\\GarrysMod\\garrysmod"
+                        else:
+                            print("Couldn't find Garry's Mod in this library folder despite it being listed in libraryfolders.vdf! Skipping...")
+                raise FileNotFoundError("Could not find gmod in libraryfolders.vdf")
+            except (SyntaxError, AttributeError) as e:
+                print("Could not parse libraryfolders.vdf\n"+str(e))
                 print("Failed to parse libraryfolders.vdf. Trying steamapps/common default path...")
-                # Use this to find libraryfolders.vdf, then parse it with vdf.parse, find gmod install path (gmod app id = 4000), then autofill the path into the textbox
+                # then autofill the path into the textbox
         else:
             print("Failed to find libraryfolders.vdf. Trying steamapps/common default path...")
-    except (OSError, WindowsError, EnvironmentError, FileNotFoundError):
+    except (OSError, WindowsError, EnvironmentError, FileNotFoundError) as e:
+        print("Failed to find Steam.\n"+str(e))
         print("Steam not found, trying default programfiles(x86) path...")
         print("Not found in programfiles(x86), user must enter path manually.")
         # If failed, see if gmod exists on the path where Steam was
         # If failed, see if gmod exists on the default install path
         # If failed, ask the user to manually enter the path
-    return None
+    return ""
 
 
 class MainWindow:
