@@ -67,7 +67,7 @@ def find_gmod():
                         else:
                             print("Couldn't find Garry's Mod in this library folder despite it being listed in libraryfolders.vdf! Skipping...")
                 raise FileNotFoundError("Could not find gmod in libraryfolders.vdf!")
-            except (SyntaxError, AttributeError, FileNotFoundError) as e:
+            except (SyntaxError, AttributeError, FileNotFoundError, KeyError) as e:
                 print("Could not parse libraryfolders.vdf\n"+str(e))
                 print("Failed to parse libraryfolders.vdf. Trying steamapps/common where Steam is located...")
                 # Use the path to Steam as a guess
