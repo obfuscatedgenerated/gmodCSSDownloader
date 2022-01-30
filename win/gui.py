@@ -110,7 +110,11 @@ class MainWindow:
                 self.create_scmd_progress(
                     self.scmd_success_callback, self.scmd_abort_callback
                 )
-        find_gmod()# use the return value to autofill the path into the textbox
+        self.gmodPathLabel = tk.Label(self.frame, text="garrysmod Path (not the game directory, but the asset directory inside it):", background="black", foreground="white")
+        self.gmodPathLabel.pack()
+        self.gmodPathVar = tk.StringVar(self.frame, value=find_gmod())
+        self.gmodPathEntry = tk.Entry(self.frame, width=65, textvariable=self.gmodPathVar)
+        self.gmodPathEntry.pack()
 
     def create_scmd_progress(self, successcallback, abortcallback):
         self.scmd_window = tk.Toplevel(self.master)
