@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import messagebox
 import asyncio
 import winreg
+import os
+import vdf
 
 regtypeReverseLookup = ["REG_NONE","REG_SZ","REG_EXPAND_SZ","REG_BINARY","REG_DWORD_LITTLE_ENDIAN","REG_DWORD_BIGENDIAN","REG_LINK","REG_MULTI_SZ","REG_RESOURCE_LIST","REG_FULL_RESOURCE_DESCRIPTOR","REG_RESOURCE_REQUIREMENTS_LIST","REG_QWORD_LITTLE_ENDIAN"] # REG_DWORD defaults to REG_DWORD_LITTLE_ENDIAN, REG_QWORD defaults to REG_QWORD_LITTLE_ENDIAN
 
@@ -37,6 +39,7 @@ async def check_scmd():
 
 def find_gmod():
     try:
+        print("Finding Steam...")
         reg_connection = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
         reg_key = winreg.OpenKey(reg_connection, r"SOFTWARE\\Valve\\Steam")
         reg_value = winreg.QueryValueEx(reg_key, "SteamPath")
@@ -44,9 +47,28 @@ def find_gmod():
             print("Invalid type for SteamPath. Expected REG_SZ (int: 1), got "+regtypeReverseLookup[reg_value[1]]+" (int: "+str(reg_value[1])+")")
             raise OSError("Invalid type for SteamPath. Expected REG_SZ (int: 1), got "+regtypeReverseLookup[reg_value[1]]+" (int: "+str(reg_value[1])+")")
         print(reg_value[0])
-        # Use this to find libraryfolders.vdf, then parse it as json, find gmod install path (gmod app id = 4000), then autofill the path into the textbox
+        if os.path.isfile(reg_value[0]+"/steamapps/libraryfolders.vdf"):
+            print("Using libraryfolders.vdf...")
+            try:
+                parsed = vdf.parse(open(reg_value[0]+"/steamapps/libraryfolders.vdf", "r"))
+                libfolders = parsed["libraryfolders"]
+                del libfolders["contentstatsid"]
+                for lf in libfolders:
+                    print("Searching in "+libfolders[lf]["path"]+"...")
+                    if "4000" in libfolders[lf]["apps"]:
+                        print("Found gmod app ID! Checking path...")
+                        # Check if path has the game in steamapps common
+                        # If yes, return the path
+                        # If no, ignore and continue
+            except (SyntaxError, AttributeError):
+                print("Failed to parse libraryfolders.vdf. Trying steamapps/common default path...")
+                # Use this to find libraryfolders.vdf, then parse it with vdf.parse, find gmod install path (gmod app id = 4000), then autofill the path into the textbox
+        else:
+            print("Failed to find libraryfolders.vdf. Trying steamapps/common default path...")
     except (OSError, WindowsError, EnvironmentError, FileNotFoundError):
-        print("Steam not found, trying next method...")
+        print("Steam not found, trying default programfiles(x86) path...")
+        print("Not found in programfiles(x86), user must enter path manually.")
+        # If failed, see if gmod exists on the path where Steam was
         # If failed, see if gmod exists on the default install path
         # If failed, ask the user to manually enter the path
     return None
