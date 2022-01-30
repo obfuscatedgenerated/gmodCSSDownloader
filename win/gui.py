@@ -39,6 +39,7 @@ async def check_scmd():
 
 def find_gmod():
     try:
+        # Use the registry to locate Steam's install path
         print("Finding Steam...")
         reg_connection = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
         reg_key = winreg.OpenKey(reg_connection, r"SOFTWARE\\Valve\\Steam")
@@ -50,9 +51,11 @@ def find_gmod():
         if os.path.isfile(reg_value[0]+"/steamapps/libraryfolders.vdf"):
             print("Using libraryfolders.vdf...")
             try:
+                # Parse the libraryfolders.vdf file
                 parsed = vdf.parse(open(reg_value[0]+"/steamapps/libraryfolders.vdf", "r"))
                 libfolders = parsed["libraryfolders"]
                 del libfolders["contentstatsid"]
+                # Search for Garry's Mod ID
                 for lf in libfolders:
                     print("Searching in "+libfolders[lf]["path"]+"...")
                     if "4000" in libfolders[lf]["apps"]:
@@ -63,20 +66,29 @@ def find_gmod():
                             return libfolders[lf]["path"]+"\\steamapps\\common\\GarrysMod\\garrysmod"
                         else:
                             print("Couldn't find Garry's Mod in this library folder despite it being listed in libraryfolders.vdf! Skipping...")
-                raise FileNotFoundError("Could not find gmod in libraryfolders.vdf")
-            except (SyntaxError, AttributeError) as e:
+                raise FileNotFoundError("Could not find gmod in libraryfolders.vdf!")
+            except (SyntaxError, AttributeError, FileNotFoundError) as e:
                 print("Could not parse libraryfolders.vdf\n"+str(e))
-                print("Failed to parse libraryfolders.vdf. Trying steamapps/common default path...")
-                # then autofill the path into the textbox
+                print("Failed to parse libraryfolders.vdf. Trying steamapps/common where Steam is located...")
+                # Use the path to Steam as a guess
+                if os.path.isdir(reg_value[0]+"/steamapps/common/GarrysMod/garrysmod"):
+                    print("Found Garry's Mod!")
+                    print(reg_value[0]+"/steamapps/common/GarrysMod/garrysmod")
+                    return reg_value[0]+"/steamapps/common/GarrysMod/garrysmod"
+                else:
+                    raise FileNotFoundError("Could not find Garry's Mod in steamapps/common where Steam is located!")
         else:
-            print("Failed to find libraryfolders.vdf. Trying steamapps/common default path...")
+            raise FileNotFoundError("Failed to find libraryfolders.vdf!")
     except (OSError, WindowsError, EnvironmentError, FileNotFoundError) as e:
-        print("Failed to find Steam.\n"+str(e))
-        print("Steam not found, trying default programfiles(x86) path...")
-        print("Not found in programfiles(x86), user must enter path manually.")
-        # If failed, see if gmod exists on the path where Steam was
-        # If failed, see if gmod exists on the default install path
-        # If failed, ask the user to manually enter the path
+        print("Failed to find/parse Steam data.\n"+str(e))
+        print("Trying default programfiles (x86) path...")
+        # Use the default programfiles (x86) path as a guess
+        if os.path.isdir("c:/program files (x86)/steam/steamapps/common/GarrysMod/garrysmod"):
+            print("Found Garry's Mod!")
+            print("c:/program files (x86)/steam/steamapps/common/GarrysMod/garrysmod")
+            return "c:/program files (x86)/steam/steamapps/common/GarrysMod/garrysmod"
+        else:
+            print("Not found in programfiles (x86), user must enter path manually.")
     return ""
 
 
@@ -98,7 +110,7 @@ class MainWindow:
                 self.create_scmd_progress(
                     self.scmd_success_callback, self.scmd_abort_callback
                 )
-        find_gmod()
+        find_gmod()# use the return value to autofill the path into the textbox
 
     def create_scmd_progress(self, successcallback, abortcallback):
         self.scmd_window = tk.Toplevel(self.master)
