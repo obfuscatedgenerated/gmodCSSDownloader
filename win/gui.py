@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 import asyncio
+import winreg
 
 if __name__ == "__main__":
     print("Importing as debug...")
@@ -33,11 +34,16 @@ async def check_scmd():
 
 
 def find_gmod():
-    # HKEY_CURRENT_USER\SOFTWARE\Valve\Steam
-    # SteamPath
-    # Use this to find libraryfolders.vdf, then parse it as json, find gmod install path (gmod app id = 4000), then autofill the path into the textbox
-    # If failed, see if gmod exists on the default install path
-    # If failed, ask the user to manually enter the path
+    try:
+        reg_connection = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
+        reg_key = winreg.OpenKey(reg_connection, r"SOFTWARE\\Valve\\Steam")
+        reg_value = winreg.QueryValueEx(reg_key, "SteamPath")[0]
+        print(reg_value)
+        # Use this to find libraryfolders.vdf, then parse it as json, find gmod install path (gmod app id = 4000), then autofill the path into the textbox
+    except (OSError, WindowsError, EnvironmentError, FileNotFoundError):
+        print("Steam not found, trying next method...")
+        # If failed, see if gmod exists on the default install path
+        # If failed, ask the user to manually enter the path
     return None
 
 
@@ -59,6 +65,7 @@ class MainWindow:
                 self.create_scmd_progress(
                     self.scmd_success_callback, self.scmd_abort_callback
                 )
+        find_gmod()
 
     def create_scmd_progress(self, successcallback, abortcallback):
         self.scmd_window = tk.Toplevel(self.master)
