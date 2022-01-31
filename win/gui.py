@@ -67,7 +67,7 @@ def find_gmod():
                         else:
                             print("Couldn't find Garry's Mod in this library folder despite it being listed in libraryfolders.vdf! Skipping...")
                 raise FileNotFoundError("Could not find gmod in libraryfolders.vdf!")
-            except (SyntaxError, AttributeError, FileNotFoundError, KeyError) as e:
+            except (SyntaxError, AttributeError, FileNotFoundError, KeyError, WindowsError) as e:
                 print("Could not parse libraryfolders.vdf\n"+str(e))
                 print("Failed to parse libraryfolders.vdf. Trying steamapps/common where Steam is located...")
                 # Use the path to Steam as a guess
@@ -78,7 +78,14 @@ def find_gmod():
                 else:
                     raise FileNotFoundError("Could not find Garry's Mod in steamapps/common where Steam is located!")
         else:
-            raise FileNotFoundError("Failed to find libraryfolders.vdf!")
+            print("Failed to find libraryfolders.vdf. Trying steamapps/common where Steam is located...")
+            # Use the path to Steam as a guess
+            if os.path.isdir(reg_value[0]+"/steamapps/common/GarrysMod/garrysmod"):
+                print("Found Garry's Mod!")
+                print(reg_value[0]+"/steamapps/common/GarrysMod/garrysmod")
+                return reg_value[0]+"/steamapps/common/GarrysMod/garrysmod"
+            else:
+                raise FileNotFoundError("Could not find Garry's Mod in steamapps/common where Steam is located!")
     except (OSError, WindowsError, EnvironmentError, FileNotFoundError) as e:
         print("Failed to find/parse Steam data.\n"+str(e))
         print("Trying default programfiles (x86) path...")
