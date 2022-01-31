@@ -30,7 +30,10 @@ async def check_scmd():
     stdout, stderr = await proc.communicate()
     if stderr:
         if stderr.startswith(b"INFO:"):
-            return False
+            if not os.path.isfile("./data/steamcmd.exe"):
+                return False
+            else:
+                return "./data/steamcmd.exe"
         else:
             raise Exception(stderr.decode())
     else:
@@ -140,6 +143,7 @@ class SCMD_Progress:
     def __init__(self, master, successcallback, abortcallback):
         self.master = master
         self.frame = tk.Frame(self.master, background="black")
+        self.frame.pack()
         self.master.title("gmodCSSDownloader - SteamCMD Progress")
         get_scmd.main(self.master, self.frame, successcallback, abortcallback)
 
