@@ -3,14 +3,16 @@
 
 # Extract it to temp "data" folder
 
+abortcbk = None
 active_conn = None
 
-def abort(abortcallback):
+def abort():
     active_conn.close()
-    abortcallback()
+    abortcbk()
 
 # GUI code will create a window with a frame, the frame will be passed to main, this code needs to pack a progressbar and other general info
 def main(window, frame, successcallback, abortcallback):
+    abortcbk = abortcallback
     window.protocol("WM_DELETE_WINDOW", abort)
     print("Fetching steamcmd...")
     print("Done.")
