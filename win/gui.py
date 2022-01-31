@@ -134,7 +134,7 @@ class SCMD_Progress:
         self.master = master
         self.frame = tk.Frame(self.master, background="black")
         self.master.title("gmodCSSDownloader - SteamCMD Progress")
-        get_scmd_win.main(self.master, self.frame, successcallback, abortcallback)
+        get_scmd.main(self.master, self.frame, successcallback, abortcallback)
 
 
 def main():
