@@ -161,5 +161,5 @@ if __name__ == "__main__":
 
 
 # File select: Where to save?
-# File select or perhaps auto detect: gmod path
+# File select or perhaps auto detect: gmod path (DONE)
 # Optional input: use credentials? (default: anonymous)

@@ -14,7 +14,6 @@ def abort(abortcbk,window):
     abortcbk()
 
 
-# GUI code will create a window with a frame, the frame will be passed to main, this code needs to pack a progressbar and other general info
 def main(window, frame, successcallback, abortcallback):
     window.protocol("WM_DELETE_WINDOW", lambda: abort(abortcallback,window))
     print("Fetching steamcmd...")
