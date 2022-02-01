@@ -101,7 +101,7 @@ def find_gmod():
             print("Not found in programfiles (x86), user must enter path manually.")
     return ""
 
-steamcmd_path = ""
+steamcmd_path = None
 
 class MainWindow:
     def __init__(self, master):
