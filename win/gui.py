@@ -107,14 +107,14 @@ def smart_path_select(title, pathvar):
     if not str(filename) == "()" and not str(filename) == "":
         pathvar.set(filename)
 
-def start_download(gmodpath, assetspath, username, password, successcallback, abortcallback):
+def start_download(master, frame, gmodpath, assetspath, username, password, successcallback, abortcallback):
     # TODO: Validate input HERE
     steamcmd_path = asyncio.run(check_scmd())
     if steamcmd_path == False or steamcmd_path == None:
         print("SteamCMD not found!")
         messagebox.showerror("SteamCMD not found!", "SteamCMD not found! Please restart this program.")
         return
-    get_css.main(steamcmd_path, gmodpath, assetspath, username, password, successcallback, abortcallback)
+    get_css.main(master, frame, steamcmd_path, gmodpath, assetspath, username, password, successcallback, abortcallback)
 
 steamcmd_path = None
 
@@ -135,7 +135,6 @@ class MainWindow:
                 "SteamCMD not found in the PATH. Do you want to download it to the data directory?",
             )
             if yn:
-                self.master.withdraw()
                 self.create_scmd_progress(
                     self.scmd_success_callback, self.scmd_abort_callback
                 )
@@ -163,10 +162,11 @@ class MainWindow:
         self.loginPassVar = tk.StringVar(self.frame, value="")
         self.loginPassEntry = tk.Entry(self.frame, width=65, textvariable=self.loginPassVar, show="*")
         self.loginPassEntry.grid(row=7, column=0)
-        self.startButton = tk.Button(self.frame, text="Start Download", command=lambda: start_download(self.gmodPathVar.get(), self.cssPathVar.get(), self.loginUserVar.get(), self.loginPassVar.get()))
+        self.startButton = tk.Button(self.frame, text="Start Download", command=lambda: self.create_css_progress(self.gmodPathVar.get(), self.cssPathVar.get(), self.loginUserVar.get(), self.loginPassVar.get(), self.css_success_callback, self.css_abort_callback))
         self.startButton.grid(row=8, column=0)
 
     def create_scmd_progress(self, successcallback, abortcallback):
+        self.master.withdraw()
         self.scmd_window = tk.Toplevel(self.master)
         self.app = SCMD_Progress(self.scmd_window, successcallback, abortcallback)
 
@@ -180,6 +180,20 @@ class MainWindow:
     def scmd_abort_callback(self):
         self.master.deiconify()
         messagebox.showerror("Aborted", "SteamCMD download was aborted!")
+    
+    def create_css_progress(self, gmodpath, assetspath, username, password, successcallback, abortcallback):
+        self.master.withdraw()
+        self.css_window = tk.Toplevel(self.master)
+        self.app = CSS_Progress(self.css_window, gmodpath, assetspath, username, password, successcallback, abortcallback)
+
+    def css_success_callback(self):
+        self.master.deiconify()
+        messagebox.showinfo("Success", "Downloaded CS:S assets successfully!")
+        # TODO: go to write_mount
+
+    def css_abort_callback(self):
+        self.master.deiconify()
+        messagebox.showinfo("Aborted", "CS:S assets download was aborted!")
 
 
 class SCMD_Progress:
@@ -190,6 +204,13 @@ class SCMD_Progress:
         self.master.title("gmodCSSDownloader - SteamCMD Progress")
         get_scmd.main(self.master, self.frame, successcallback, abortcallback)
 
+class CSS_Progress:
+    def __init__(self, master, gmodpath, assetspath, username, password, successcallback, abortcallback):
+        self.master = master
+        self.frame = tk.Frame(self.master, background="black")
+        self.frame.pack()
+        self.master.title("gmodCSSDownloader - CS:S Progress")
+        start_download(self.master, self.frame, gmodpath, assetspath, username, password, successcallback, abortcallback)
 
 def main():
     print("Launching GUI...")

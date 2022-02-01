@@ -7,7 +7,14 @@
 # Delete non-assets
 
 
-def main(steamcmd_path, gmodpath, assetspath, username, password, successcallback, abortcallback):
+def abort(abortcbk,window):
+    window.destroy()
+    abortcbk()
+
+
+def main(window, frame, steamcmd_path, gmodpath, assetspath, username, password, successcallback, abortcallback):
+    window.protocol("WM_DELETE_WINDOW", lambda: abort(abortcallback,window))
     print("Fetching CSS...")
     print("With SteamCMD: "+steamcmd_path)
     print("Done!")
+    successcallback()
