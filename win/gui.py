@@ -107,14 +107,14 @@ def smart_path_select(title, pathvar):
     if not str(filename) == "()" and not str(filename) == "":
         pathvar.set(filename)
 
-def start_download():
+def start_download(gmodpath, assetspath, username, password, successcallback, abortcallback):
     # TODO: Validate input HERE
     steamcmd_path = asyncio.run(check_scmd())
     if steamcmd_path == False or steamcmd_path == None:
         print("SteamCMD not found!")
         messagebox.showerror("SteamCMD not found!", "SteamCMD not found! Please restart this program.")
         return
-    get_css.main(steamcmd_path)
+    get_css.main(steamcmd_path, gmodpath, assetspath, username, password, successcallback, abortcallback)
 
 steamcmd_path = None
 
@@ -124,6 +124,7 @@ class MainWindow:
         self.frame = tk.Frame(self.master, background="black")
         self.master.title("gmodCSSDownloader - Main GUI")
         # self.master.iconbitmap("icon.ico")
+        self.master.resizable(False, False)
         self.frame.pack()
         self.master.protocol("WM_DELETE_WINDOW", close_windows)
         steamcmd_path = asyncio.run(check_scmd())
@@ -152,6 +153,18 @@ class MainWindow:
         self.cssPathEntry.grid(row=3, column=0)
         self.cssPathButton = tk.Button(self.frame, text="Browse", command=lambda: smart_path_select("Select asset save path (moving, renaming, deleting etc. will break the assets)", self.cssPathVar))
         self.cssPathButton.grid(row=3, column=1)
+        self.loginUserLabel = tk.Label(self.frame, text="Steam Username (it's recommended you leave this as the default)", background="black", foreground="white")
+        self.loginUserLabel.grid(row=4, column=0)
+        self.loginUserVar = tk.StringVar(self.frame, value="anonymous")
+        self.loginUserEntry = tk.Entry(self.frame, width=65, textvariable=self.loginUserVar)
+        self.loginUserEntry.grid(row=5, column=0)
+        self.loginPassLabel = tk.Label(self.frame, text="Steam Password (it's recommended you leave this as the default)", background="black", foreground="white")
+        self.loginPassLabel.grid(row=6, column=0)
+        self.loginPassVar = tk.StringVar(self.frame, value="")
+        self.loginPassEntry = tk.Entry(self.frame, width=65, textvariable=self.loginPassVar, show="*")
+        self.loginPassEntry.grid(row=7, column=0)
+        self.startButton = tk.Button(self.frame, text="Start Download", command=lambda: start_download(self.gmodPathVar.get(), self.cssPathVar.get(), self.loginUserVar.get(), self.loginPassVar.get()))
+        self.startButton.grid(row=8, column=0)
 
     def create_scmd_progress(self, successcallback, abortcallback):
         self.scmd_window = tk.Toplevel(self.master)

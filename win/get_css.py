@@ -7,7 +7,7 @@
 # Delete non-assets
 
 
-def main(steamcmd_path):
+def main(steamcmd_path, gmodpath, assetspath, username, password, successcallback, abortcallback):
     print("Fetching CSS...")
     print("With SteamCMD: "+steamcmd_path)
     print("Done!")
