@@ -112,7 +112,7 @@ class MainWindow:
         self.frame.pack()
         self.master.protocol("WM_DELETE_WINDOW", close_windows)
         steamcmd_path = asyncio.run(check_scmd())
-        print("SteamCMD: "+steamcmd_path)
+        print("SteamCMD: "+str(steamcmd_path))
         if steamcmd_path == False:
             yn = messagebox.askyesno(
                 "Not found",
@@ -137,7 +137,8 @@ class MainWindow:
         self.scmd_window.destroy()
         self.master.deiconify()
         steamcmd_path = asyncio.run(check_scmd()) # check again after download
-        print("SteamCMD: "+steamcmd_path)
+        print("SteamCMD: "+str(steamcmd_path))
+        assert(steamcmd_path != False,"Something has gone terribly wrong in downloading SteamCMD! Please leave an issue on GitHub.")
 
     def scmd_abort_callback(self):
         self.master.deiconify()
