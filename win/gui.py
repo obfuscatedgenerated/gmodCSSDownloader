@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import filedialog
 import asyncio
 import winreg
 import os
@@ -101,6 +102,11 @@ def find_gmod():
             print("Not found in programfiles (x86), user must enter path manually.")
     return ""
 
+def smart_path_select(title, pathvar):
+    filename = filedialog.askdirectory(title=title)
+    if not str(filename) == "()" and not str(filename) == "":
+        pathvar.set(filename)
+
 steamcmd_path = None
 
 class MainWindow:
@@ -124,10 +130,19 @@ class MainWindow:
                     self.scmd_success_callback, self.scmd_abort_callback
                 )
         self.gmodPathLabel = tk.Label(self.frame, text="garrysmod Path (not the game directory, but the asset directory inside it):", background="black", foreground="white")
-        self.gmodPathLabel.pack()
+        self.gmodPathLabel.grid(row=0, column=0)
         self.gmodPathVar = tk.StringVar(self.frame, value=find_gmod())
         self.gmodPathEntry = tk.Entry(self.frame, width=65, textvariable=self.gmodPathVar)
-        self.gmodPathEntry.pack()
+        self.gmodPathEntry.grid(row=1, column=0)
+        self.gmodPathButton = tk.Button(self.frame, text="Browse", command=lambda: smart_path_select("Select garrysmod Path (not the game directory, but the asset directory inside it)", self.gmodPathVar))
+        self.gmodPathButton.grid(row=1, column=1)
+        self.cssPathLabel = tk.Label(self.frame, text="Asset save path (moving, renaming, deleting etc. will break the assets)", background="black", foreground="white")
+        self.cssPathLabel.grid(row=2, column=0)
+        self.cssPathVar = tk.StringVar(self.frame, value="./data/cstrike/")
+        self.cssPathEntry = tk.Entry(self.frame, width=65, textvariable=self.cssPathVar)
+        self.cssPathEntry.grid(row=3, column=0)
+        self.cssPathButton = tk.Button(self.frame, text="Browse", command=lambda: smart_path_select("Select asset save path (moving, renaming, deleting etc. will break the assets)", self.cssPathVar))
+        self.cssPathButton.grid(row=3, column=1)
 
     def create_scmd_progress(self, successcallback, abortcallback):
         self.scmd_window = tk.Toplevel(self.master)
