@@ -101,6 +101,7 @@ def find_gmod():
             print("Not found in programfiles (x86), user must enter path manually.")
     return ""
 
+steamcmd_path = ""
 
 class MainWindow:
     def __init__(self, master):
@@ -110,7 +111,9 @@ class MainWindow:
         # self.master.iconbitmap("icon.ico")
         self.frame.pack()
         self.master.protocol("WM_DELETE_WINDOW", close_windows)
-        if asyncio.run(check_scmd()) == False:
+        steamcmd_path = asyncio.run(check_scmd())
+        print("SteamCMD: "+steamcmd_path)
+        if steamcmd_path == False:
             yn = messagebox.askyesno(
                 "Not found",
                 "SteamCMD not found in the PATH. Do you want to download it to the data directory?",
@@ -133,6 +136,8 @@ class MainWindow:
     def scmd_success_callback(self):
         self.scmd_window.destroy()
         self.master.deiconify()
+        steamcmd_path = asyncio.run(check_scmd()) # check again after download
+        print("SteamCMD: "+steamcmd_path)
 
     def scmd_abort_callback(self):
         self.master.deiconify()
