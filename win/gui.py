@@ -107,6 +107,15 @@ def smart_path_select(title, pathvar):
     if not str(filename) == "()" and not str(filename) == "":
         pathvar.set(filename)
 
+def start_download():
+    # TODO: Validate input HERE
+    steamcmd_path = asyncio.run(check_scmd())
+    if steamcmd_path == False or steamcmd_path == None:
+        print("SteamCMD not found!")
+        messagebox.showerror("SteamCMD not found!", "SteamCMD not found! Please restart this program.")
+        return
+    get_css.main(steamcmd_path)
+
 steamcmd_path = None
 
 class MainWindow:
