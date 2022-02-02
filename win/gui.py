@@ -222,8 +222,3 @@ def main():
 if __name__ == "__main__":
     print("Launching GUI as debug...")
     main()
-
-
-# File select: Where to save?
-# File select or perhaps auto detect: gmod path (DONE)
-# Optional input: use credentials? (default: anonymous)
