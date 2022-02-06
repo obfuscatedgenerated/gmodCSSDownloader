@@ -8,7 +8,6 @@
 
 import tkinter as tk
 from tkinter import ttk
-from datetime import datetime
 
 
 def abort(abortcbk, window):
@@ -17,6 +16,11 @@ def abort(abortcbk, window):
 
 
 poutputtext = None
+
+
+def puts(text):
+    poutputtext.insert(tk.END, text)
+    poutputtext.see(tk.END)
 
 
 def main(
@@ -52,11 +56,6 @@ def main(
     window.update()
     print("Done!")
     successcallback()
-
-
-def puts(text):
-    poutputtext.insert(tk.END, text)
-    poutputtext.see(tk.END)
 
 
 if __name__ == "__main__":
