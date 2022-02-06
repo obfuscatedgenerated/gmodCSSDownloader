@@ -1,13 +1,7 @@
-# Use popen pipe to show status in gui textbox
-
-# Save to the temp "data" folder
-
-# Move assets to selected folder
-
-# Delete non-assets
-
 import tkinter as tk
 from tkinter import ttk
+import asyncio
+from concurrent.futures import ProcessPoolExecutor
 
 
 def abort(abortcbk, window):
@@ -15,27 +9,63 @@ def abort(abortcbk, window):
     abortcbk()
 
 
+curr_window = None
 poutputtext = None
 
 
 def puts(text):
+    print(text)
+    poutputtext.insert(tk.END, "\n")
     poutputtext.insert(tk.END, text)
     poutputtext.see(tk.END)
+
+
+async def updatewin():
+    while True:
+        curr_window.update()
+        await asyncio.sleep(0.05)
+
+
+async def update_poutput_loop(pipe, type):
+    while True:
+        if type == "err":
+            raise Exception(await pipe.read(1024))
+        else:
+            puts(await pipe.read(1024))
+
+
+async def fetch_css(steamcmd_path, username, password):
+    print("Fetch start...")
+    loop = asyncio.get_event_loop()
+    proc = await asyncio.create_subprocess_shell(
+        steamcmd_path
+        + " +force_install_dir ./data/ +login "
+        + username
+        + " "
+        + password
+        + " +app_update 232330 -validate +quit",
+        stderr=asyncio.subprocess.PIPE,
+        stdout=asyncio.subprocess.PIPE,
+    )
+    loop.create_task(update_poutput_loop(proc.stdout, "out"))
+    loop.create_task(update_poutput_loop(proc.stderr, "err"))
+    loop.create_task(updatewin())
+    await proc.wait()
 
 
 def main(
     window,
     frame,
     steamcmd_path,
-    gmodpath,
     assetspath,
     username,
     password,
     successcallback,
     abortcallback,
 ):
-    global poutputtext
-    window.protocol("WM_DELETE_WINDOW", lambda: abort(abortcallback, window))
+    global curr_window, poutputtext
+    curr_window = window
+    curr_window.protocol("WM_DELETE_WINDOW", lambda: abort(abortcallback, window))
     print("Fetching CSS...")
     print("With SteamCMD: " + steamcmd_path)
     proglabel = tk.Label(
@@ -53,7 +83,12 @@ def main(
         frame, height=15, width=50, background="black", foreground="white"
     )
     poutputtext.pack()
-    window.update()
+    curr_window.update()
+    asyncio.get_event_loop().run_until_complete(
+        fetch_css(steamcmd_path, username, password)
+    )
+    # move assets to selected folder
+    # delete non-assets
     print("Done!")
     successcallback()
 
@@ -66,13 +101,11 @@ if __name__ == "__main__":
     main(
         dbg,
         dbgf,
-        "./steamcmd.exe",
-        "./gmod",
-        "./assets",
-        "username",
-        "password",
+        "steamcmd",
+        "./data/",
+        "anonymous",
+        "",
         lambda: print("Success!"),
         lambda: print("Abort!"),
     )
-    puts("Test!\n")
     dbg.mainloop()

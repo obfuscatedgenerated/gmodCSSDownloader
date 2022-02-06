@@ -168,7 +168,6 @@ def smart_path_select(title, pathvar):
 def start_download(
     master,
     frame,
-    gmodpath,
     assetspath,
     username,
     password,
@@ -187,7 +186,6 @@ def start_download(
         master,
         frame,
         steamcmd_path,
-        gmodpath,
         assetspath,
         username,
         password,
@@ -323,7 +321,6 @@ class MainWindow:
         self.css_window = tk.Toplevel(self.master)
         self.app = CSS_Progress(
             self.css_window,
-            gmodpath,
             assetspath,
             username,
             password,
