@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import asyncio
+import os
 
 
 def abort(abortcbk, window):
@@ -47,7 +48,7 @@ async def fetch_css(steamcmd_path, username, password):
     loop = asyncio.get_event_loop()
     proc = await asyncio.create_subprocess_shell(
         steamcmd_path
-        + " +force_install_dir ./data/ +login "
+        + " +force_install_dir "+os.path.abspath("./data/")+" +login "
         + username
         + " "
         + password
