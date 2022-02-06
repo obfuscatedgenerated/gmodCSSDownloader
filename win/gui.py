@@ -33,6 +33,7 @@ else:
 
 
 def close_windows():
+    print("Exiting... (if you started downloading the assets, this might take a few seconds)")
     raise SystemExit
 
 
