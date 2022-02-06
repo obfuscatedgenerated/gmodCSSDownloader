@@ -365,7 +365,6 @@ class CSS_Progress:
         start_download(
             self.master,
             self.frame,
-            gmodpath,
             assetspath,
             username,
             password,
