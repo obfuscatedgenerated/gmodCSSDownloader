@@ -351,7 +351,6 @@ class CSS_Progress:
     def __init__(
         self,
         master,
-        gmodpath,
         assetspath,
         username,
         password,
