@@ -8,7 +8,7 @@ def abort(abortcbk, window):
     try:
         proc.kill()
         asyncio.get_event_loop().stop()
-        os.system("taskkill /im steamcmd.exe /f") # last resort
+        os.popen("taskkill /im steamcmd.exe /f") # last resort
     except RuntimeError as e:
         print("Thread was running but was told to stop. Oops!")
         print("Error was: " + str(e))
