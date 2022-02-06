@@ -37,11 +37,18 @@ async def updatewin():
 
 
 async def update_poutput_loop(pipe, type):
+    tout = 0
     while True:
         if type == "err":
             raise Exception(await pipe.read(1024))
         else:
-            puts(await pipe.read(1024))
+            pr = await pipe.read(1024)
+            if pr == b'':
+                tout += 1
+                if tout > 5:
+                    print("Got blank output from SteamCMD 5 times, breaking loop...")
+                    break
+            puts(pr)
 
 
 async def fetch_css(steamcmd_path, username, password):
@@ -99,6 +106,21 @@ def main(
     asyncio.get_event_loop().run_until_complete(
         fetch_css(steamcmd_path, username, password)
     )
+    for widget in frame.winfo_children():
+        widget.destroy()
+    proglabel = tk.Label(
+        frame, text="Moving files...", background="black", foreground="white"
+    )
+    proglabel.pack()
+    progress = ttk.Progressbar(
+        frame, orient="horizontal", length=300, mode="indeterminate"
+    )
+    progress["value"] = 0
+    progress["maximum"] = 100
+    progress.pack()
+    progress.start()
+    window.update()
+    print("Moving files...")
     shutil.move("./data/cstrike/", assetspath, copy_function = shutil.copytree) 
     # delete non-assets
     print("Done!")
