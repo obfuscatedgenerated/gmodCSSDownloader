@@ -105,7 +105,7 @@ def main(
 
 
 if __name__ == "__main__":
-    print("Runnning get CSS GUI as debug...")
+    print("Running get CSS GUI as debug...")
     dbg = tk.Tk()
     dbgf = tk.Frame(dbg, background="black")
     dbgf.pack()
