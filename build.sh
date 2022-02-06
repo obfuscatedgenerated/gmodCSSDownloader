@@ -1,0 +1,1 @@
+pyinstaller --onefile main.py --specpath ./spec/ --name=gmodCSSDownloader
