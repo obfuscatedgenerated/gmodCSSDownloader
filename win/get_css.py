@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import asyncio
 import os
+import shutil
 
 
 def abort(abortcbk, window):
@@ -98,7 +99,7 @@ def main(
     asyncio.get_event_loop().run_until_complete(
         fetch_css(steamcmd_path, username, password)
     )
-    # move assets to selected folder
+    shutil.move("./data/cstrike/", assetspath, copy_function = shutil.copytree) 
     # delete non-assets
     print("Done!")
     successcallback()
