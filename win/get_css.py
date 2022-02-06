@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 import asyncio
-from concurrent.futures import ProcessPoolExecutor
 
 
 def abort(abortcbk, window):
