@@ -4,6 +4,11 @@ import asyncio
 
 
 def abort(abortcbk, window):
+    try:
+        asyncio.get_event_loop().stop()
+    except RuntimeError:
+        print("Thread was running but was told to stop. Oops!")
+        pass
     window.destroy()
     abortcbk()
 
