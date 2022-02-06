@@ -5,9 +5,11 @@ import asyncio
 
 def abort(abortcbk, window):
     try:
+        proc.kill()
         asyncio.get_event_loop().stop()
-    except RuntimeError:
+    except RuntimeError as e:
         print("Thread was running but was told to stop. Oops!")
+        print("Error was: " + str(e))
         pass
     window.destroy()
     abortcbk()
@@ -15,6 +17,7 @@ def abort(abortcbk, window):
 
 curr_window = None
 poutputtext = None
+proc = None
 
 
 def puts(text):
@@ -39,6 +42,7 @@ async def update_poutput_loop(pipe, type):
 
 
 async def fetch_css(steamcmd_path, username, password):
+    global proc
     print("Using SteamCMD to fetch CS:S...")
     loop = asyncio.get_event_loop()
     proc = await asyncio.create_subprocess_shell(
