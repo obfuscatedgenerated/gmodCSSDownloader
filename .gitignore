@@ -1,10 +1,9 @@
 .dccache
-/__pycache__/
 /data/
 /.vscode/
 test_download_bar.py
-/win/__pycache__/
 test_winreg.py
 /env/
 /build/
 /dist/
+*.pyc
