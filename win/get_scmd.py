@@ -47,8 +47,7 @@ def main(window, frame, successcallback, abortcallback):
     print("Extracting...")
     for widget in frame.winfo_children():
         widget.destroy()
-    progvar = tk.StringVar(frame, value="Extracting...")
-    proglabel = tk.Label(frame, textvariable=progvar, background="black", foreground="white")
+    proglabel = tk.Label(frame, text="Extracting...", background="black", foreground="white")
     proglabel.pack()
     progress = ttk.Progressbar(frame, orient="horizontal",length=300, mode="indeterminate")
     progress["value"] = 0
