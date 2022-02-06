@@ -1,1 +1,1 @@
-pyinstaller --onefile main.py --specpath ./spec/ --name=gmodCSSDownloader
+pyinstaller --onefile main.py --specpath ./spec/ --name=gmodCSSDownloader --icon=icon.ico
