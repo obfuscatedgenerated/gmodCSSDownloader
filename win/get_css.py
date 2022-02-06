@@ -35,7 +35,7 @@ async def update_poutput_loop(pipe, type):
 
 
 async def fetch_css(steamcmd_path, username, password):
-    print("Fetch start...")
+    print("Using SteamCMD to fetch CS:S...")
     loop = asyncio.get_event_loop()
     proc = await asyncio.create_subprocess_shell(
         steamcmd_path
@@ -84,6 +84,7 @@ def main(
     )
     poutputtext.pack()
     curr_window.update()
+    asyncio.set_event_loop(asyncio.new_event_loop())
     asyncio.get_event_loop().run_until_complete(
         fetch_css(steamcmd_path, username, password)
     )
@@ -108,4 +109,3 @@ if __name__ == "__main__":
         lambda: print("Success!"),
         lambda: print("Abort!"),
     )
-    dbg.mainloop()
