@@ -43,30 +43,36 @@ def close_windows():
 
 
 async def check_scmd():
+    # Create a shell to check for SteamCMD
     proc = await asyncio.create_subprocess_shell(
         "where steamcmd", stderr=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE
     )
 
     stdout, stderr = await proc.communicate()
     if stderr:
+        # Came back negative
         if stderr.startswith(b"INFO:"):
+            # Check if we've downloaded SteamCMD via this program
             if not os.path.isfile("./data/steamcmd.exe"):
                 return False
             else:
                 return "./data/steamcmd.exe"
         else:
+            # Something else went wrong
             raise Exception(stderr.decode())
     else:
+        # SteamCMD was found
         return stdout.decode().strip()
 
 
 def find_gmod():
     try:
-        # Use the registry to locate Steam's install path
         print("Finding Steam...")
+        # Use the registry to locate Steam's install path
         reg_connection = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
         reg_key = winreg.OpenKey(reg_connection, r"SOFTWARE\\Valve\\Steam")
         reg_value = winreg.QueryValueEx(reg_key, "SteamPath")
+        # Check the type of the value
         if reg_value[1] != winreg.REG_SZ:
             print(
                 "Invalid type for SteamPath. Expected REG_SZ (int: 1), got "
@@ -83,6 +89,7 @@ def find_gmod():
                 + ")"
             )
         print(reg_value[0])
+        # Check libraryfolders.vdf exists
         if os.path.isfile(reg_value[0] + "/steamapps/libraryfolders.vdf"):
             print("Using libraryfolders.vdf...")
             try:
@@ -97,6 +104,7 @@ def find_gmod():
                     print("Searching in " + libfolders[lf]["path"] + "...")
                     if "4000" in libfolders[lf]["apps"]:
                         print("Found gmod app ID! Checking path...")
+                        # Check if the path exists
                         if os.path.isdir(
                             libfolders[lf]["path"]
                             + "\\steamapps\\common\\GarrysMod\\garrysmod"
@@ -167,6 +175,7 @@ def find_gmod():
 
 def smart_path_select(title, pathvar):
     filename = filedialog.askdirectory(title=title)
+    # Check if the user cancelled
     if not str(filename) == "()" and not str(filename) == "":
         pathvar.set(filename)
 
@@ -212,6 +221,7 @@ class MainWindow:
         self.master.resizable(False, False)
         self.frame.pack()
         self.master.protocol("WM_DELETE_WINDOW", close_windows)
+        # Check/get steam path
         steamcmd_path = asyncio.run(check_scmd())
         print("SteamCMD: " + str(steamcmd_path))
         if steamcmd_path == False:
@@ -223,6 +233,7 @@ class MainWindow:
                 self.create_scmd_progress(
                     self.scmd_success_callback, self.scmd_abort_callback
                 )
+        # Create the UI
         self.gmodPathLabel = tk.Label(
             self.frame,
             text="garrysmod Path (not the game directory, but the asset directory inside it):",
@@ -303,6 +314,7 @@ class MainWindow:
 
     def create_scmd_progress(self, successcallback, abortcallback):
         self.master.withdraw()
+        # Create a new window and pass it to the progress bar
         self.scmd_window = tk.Toplevel(self.master)
         self.app = SCMD_Progress(self.scmd_window, successcallback, abortcallback)
 
@@ -324,6 +336,7 @@ class MainWindow:
         self, gmodpath, assetspath, username, password, successcallback, abortcallback
     ):
         self.master.withdraw()
+        # Create a new window and pass it to the progress bar
         self.css_window = tk.Toplevel(self.master)
         self.app = CSS_Progress(
             self.css_window,
@@ -338,6 +351,7 @@ class MainWindow:
         self, gmodpath, assetspath, successcallback, abortcallback
     ):
         self.master.withdraw()
+        # Create a new window and pass it to the progress bar
         self.mount_window = tk.Toplevel(self.master)
         self.app = Mount_Progress(
             self.mount_window, gmodpath, assetspath, successcallback, abortcallback
@@ -371,6 +385,7 @@ class MainWindow:
 class SCMD_Progress:
     def __init__(self, master, successcallback, abortcallback):
         self.master = master
+        # Create a frame and pass it to the script
         self.frame = tk.Frame(self.master, background="black")
         self.frame.pack()
         self.master.title("gmodCSSDownloader - SteamCMD Progress")
@@ -388,6 +403,7 @@ class CSS_Progress:
         abortcallback,
     ):
         self.master = master
+        # Create a frame and pass it to the script
         self.frame = tk.Frame(self.master, background="black")
         self.frame.pack()
         self.master.title("gmodCSSDownloader - CS:S Progress")
@@ -405,6 +421,7 @@ class CSS_Progress:
 class Mount_Progress:
     def __init__(self, master, gmodpath, assetspath, successcallback, abortcallback):
         self.master = master
+        # Create a frame and pass it to the script
         self.frame = tk.Frame(self.master, background="black")
         self.frame.pack()
         self.master.title("gmodCSSDownloader - Mount Progress")

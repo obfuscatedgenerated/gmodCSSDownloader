@@ -13,6 +13,7 @@ else:
 
 def abort(abortcbk, window):
     try:
+        # Stop the SteamCMD process in a few dire ways
         proc.kill()
         asyncio.get_event_loop().stop()
         os.popen("taskkill /im steamcmd.exe /f")  # last resort
@@ -21,6 +22,7 @@ def abort(abortcbk, window):
         print("Error was: " + str(e))
         pass
     window.destroy()
+    # Defer to the abort callback
     abortcbk()
 
 
@@ -37,6 +39,7 @@ def puts(text):
 
 
 async def updatewin():
+    # Keeps the window responsive whilst the asyncio task runs
     while True:
         curr_window.update()
         await asyncio.sleep(0.05)
@@ -46,9 +49,12 @@ async def update_poutput_loop(pipe, type):
     tout = 0
     while True:
         if type == "err":
+            # Read from stderr @ 1024 bytes
             raise Exception(await pipe.read(1024))
         else:
+            # Read from stdout @ 1024 bytes
             pr = await pipe.read(1024)
+            # Check if we have any data
             if pr == b"":
                 tout += 1
                 if tout > 5:
@@ -60,6 +66,7 @@ async def update_poutput_loop(pipe, type):
 async def fetch_css(steamcmd_path, username, password):
     global proc
     print("Using SteamCMD to fetch CS:S...")
+    # Create a shell to make SteamCMD download CS:S server files
     loop = asyncio.get_event_loop()
     proc = await asyncio.create_subprocess_shell(
         steamcmd_path
@@ -73,6 +80,7 @@ async def fetch_css(steamcmd_path, username, password):
         stderr=asyncio.subprocess.PIPE,
         stdout=asyncio.subprocess.PIPE,
     )
+    # Feed the output to the update loop
     loop.create_task(update_poutput_loop(proc.stdout, "out"))
     loop.create_task(update_poutput_loop(proc.stderr, "err"))
     loop.create_task(updatewin())
@@ -91,11 +99,13 @@ def main(
 ):
     global curr_window, poutputtext
     curr_window = window
+    # Call abort on window close
     curr_window.protocol("WM_DELETE_WINDOW", lambda: abort(abortcallback, window))
     icon.seticon(window)
     window.resizable(False, False)
     print("Fetching CSS...")
     print("With SteamCMD: " + steamcmd_path)
+    # Create the UI
     proglabel = tk.Label(
         frame, text="Fetching CS:S Assets...", background="black", foreground="white"
     )
@@ -111,13 +121,16 @@ def main(
         frame, height=15, width=50, background="black", foreground="white"
     )
     poutputtext.pack()
+    # Stop the text from being editable without any weird state tricks
     poutputtext.bind("<Key>", lambda e: "break")
     poutputtext.bind("<Button-1>", lambda e: "break")
     curr_window.update()
+    # Start the asyncio task loops
     asyncio.set_event_loop(asyncio.new_event_loop())
     asyncio.get_event_loop().run_until_complete(
         fetch_css(steamcmd_path, username, password)
     )
+    # Reset the UI
     for widget in frame.winfo_children():
         widget.destroy()
     proglabel = tk.Label(
@@ -133,9 +146,11 @@ def main(
     progress.start()
     window.update()
     print("Moving files...")
+    # Move the files to the assets folder
     shutil.move("./data/cstrike/", assetspath, copy_function=shutil.copytree)
-    # delete non-assets
+    # TODO: delete non-assets (might not be important and it lets steamcmd know that the install finished fully, maybe leave it)
     print("Done!")
+    # Call the success callback
     successcallback()
 
 

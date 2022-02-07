@@ -1,10 +1,12 @@
 import os
 from win import gui
 
+# Make data dir if it doesn't exist
 if not os.path.isdir("./data/"):
     os.mkdir("./data/")
 
 if os.name == "nt":
+    # Defer to the GUI script
     gui.main()
 else:
     print(
