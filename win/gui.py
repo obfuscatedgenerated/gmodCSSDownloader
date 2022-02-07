@@ -351,19 +351,20 @@ class MainWindow:
         self.app = Mount_Progress(self.mount_window, gmodpath, assetspath, successcallback, abortcallback)
 
     def mount_success_callback(self):
-        self.scmd_window.destroy()
+        self.mount_window.destroy()
         self.master.deiconify()
         messagebox.showinfo("Success", "CS:S assets were successfully mounted!")
 
-    def scmd_abort_callback(self):
+    def mount_abort_callback(self):
         self.master.deiconify()
         messagebox.showerror("Aborted", "Mount file write was aborted!")
 
 
     def css_success_callback(self):
+        self.css_window.destroy()
         self.master.deiconify()
         messagebox.showinfo("Success", "Downloaded CS:S assets successfully!")
-        create_mount_progress(self.gmodPathVar.get(), self.cssPathVar.get(),  self.mount_success_callback, self.mount_abort_callback)
+        self.create_mount_progress(self.gmodPathVar.get(), self.cssPathVar.get(),  self.mount_success_callback, self.mount_abort_callback)
 
     def css_abort_callback(self):
         self.master.deiconify()
