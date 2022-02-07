@@ -4,6 +4,12 @@ from tkinter import ttk
 from tkinter import messagebox
 import os
 
+if __name__ == "__main__":
+    print("Importing as debug...")
+    import icon
+else:
+    from win import icon
+
 
 def abort(abortcbk, window):
     window.destroy()
@@ -12,6 +18,7 @@ def abort(abortcbk, window):
 
 def main(window, frame, gmodpath, assetspath, successcallback, abortcallback):
     window.protocol("WM_DELETE_WINDOW", lambda: abort(abortcallback, window))
+    icon.seticon(window)
     print("Writing mount file...")
     proglabel = tk.Label(
         frame, text="Writing mount file...", background="black", foreground="white"

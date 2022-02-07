@@ -5,6 +5,12 @@ from zipfile import ZipFile
 import shutil
 import os
 
+if __name__ == "__main__":
+    print("Importing as debug...")
+    import icon
+else:
+    from win import icon
+
 res = None
 
 
@@ -17,6 +23,7 @@ def abort(abortcbk, window):
 
 def main(window, frame, successcallback, abortcallback):
     window.protocol("WM_DELETE_WINDOW", lambda: abort(abortcallback, window))
+    icon.seticon(window)
     print("Fetching steamcmd...")
     progvar = tk.StringVar(frame, value="Downloading SteamCMD... (0/0 0%)")
     proglabel = tk.Label(

@@ -4,12 +4,18 @@ import asyncio
 import os
 import shutil
 
+if __name__ == "__main__":
+    print("Importing as debug...")
+    import icon
+else:
+    from win import icon
+
 
 def abort(abortcbk, window):
     try:
         proc.kill()
         asyncio.get_event_loop().stop()
-        os.popen("taskkill /im steamcmd.exe /f") # last resort
+        os.popen("taskkill /im steamcmd.exe /f")  # last resort
     except RuntimeError as e:
         print("Thread was running but was told to stop. Oops!")
         print("Error was: " + str(e))
@@ -43,7 +49,7 @@ async def update_poutput_loop(pipe, type):
             raise Exception(await pipe.read(1024))
         else:
             pr = await pipe.read(1024)
-            if pr == b'':
+            if pr == b"":
                 tout += 1
                 if tout > 5:
                     print("Got blank output from SteamCMD 5 times, breaking loop...")
@@ -57,7 +63,9 @@ async def fetch_css(steamcmd_path, username, password):
     loop = asyncio.get_event_loop()
     proc = await asyncio.create_subprocess_shell(
         steamcmd_path
-        + " +force_install_dir "+os.path.abspath("./data/")+" +login "
+        + " +force_install_dir "
+        + os.path.abspath("./data/")
+        + " +login "
         + username
         + " "
         + password
@@ -84,6 +92,7 @@ def main(
     global curr_window, poutputtext
     curr_window = window
     curr_window.protocol("WM_DELETE_WINDOW", lambda: abort(abortcallback, window))
+    icon.seticon(window)
     print("Fetching CSS...")
     print("With SteamCMD: " + steamcmd_path)
     proglabel = tk.Label(
@@ -121,7 +130,7 @@ def main(
     progress.start()
     window.update()
     print("Moving files...")
-    shutil.move("./data/cstrike/", assetspath, copy_function = shutil.copytree) 
+    shutil.move("./data/cstrike/", assetspath, copy_function=shutil.copytree)
     # delete non-assets
     print("Done!")
     successcallback()
