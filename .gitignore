@@ -7,3 +7,4 @@ test_winreg.py
 /build/
 /dist/
 *.pyc
+/testtemp/

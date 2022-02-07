@@ -345,10 +345,25 @@ class MainWindow:
             abortcallback,
         )
 
+    def create_mount_progress(self, gmodpath, assetspath, successcallback, abortcallback):
+        self.master.withdraw()
+        self.mount_window = tk.Toplevel(self.master)
+        self.app = Mount_Progress(self.mount_window, gmodpath, assetspath, successcallback, abortcallback)
+
+    def mount_success_callback(self):
+        self.scmd_window.destroy()
+        self.master.deiconify()
+        messagebox.showinfo("Success", "CS:S assets were successfully mounted!")
+
+    def scmd_abort_callback(self):
+        self.master.deiconify()
+        messagebox.showerror("Aborted", "Mount file write was aborted!")
+
+
     def css_success_callback(self):
         self.master.deiconify()
         messagebox.showinfo("Success", "Downloaded CS:S assets successfully!")
-        # TODO: go to write_mount
+        create_mount_progress(self.gmodPathVar.get(), self.cssPathVar.get(),  self.mount_success_callback, self.mount_abort_callback)
 
     def css_abort_callback(self):
         self.master.deiconify()
@@ -387,6 +402,14 @@ class CSS_Progress:
             successcallback,
             abortcallback,
         )
+
+class Mount_Progress:
+    def __init__(self, master, gmodpath, assetspath ,successcallback, abortcallback):
+        self.master = master
+        self.frame = tk.Frame(self.master, background="black")
+        self.frame.pack()
+        self.master.title("gmodCSSDownloader - Mount Progress")
+        write_mount.main(self.master, self.frame, gmodpath, assetspath, successcallback, abortcallback)
 
 
 def main():
