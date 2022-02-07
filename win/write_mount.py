@@ -19,6 +19,7 @@ def abort(abortcbk, window):
 def main(window, frame, gmodpath, assetspath, successcallback, abortcallback):
     window.protocol("WM_DELETE_WINDOW", lambda: abort(abortcallback, window))
     icon.seticon(window)
+    window.resizable(False, False)
     print("Writing mount file...")
     proglabel = tk.Label(
         frame, text="Writing mount file...", background="black", foreground="white"

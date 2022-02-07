@@ -93,6 +93,7 @@ def main(
     curr_window = window
     curr_window.protocol("WM_DELETE_WINDOW", lambda: abort(abortcallback, window))
     icon.seticon(window)
+    window.resizable(False, False)
     print("Fetching CSS...")
     print("With SteamCMD: " + steamcmd_path)
     proglabel = tk.Label(
