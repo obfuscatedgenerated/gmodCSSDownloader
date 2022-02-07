@@ -1,5 +1,8 @@
 import os
+from __version__ import __version__
 from win import gui
+
+print("Version: " + __version__)
 
 # Make data dir if it doesn't exist
 if not os.path.isdir("./data/"):
