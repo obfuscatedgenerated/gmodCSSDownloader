@@ -41,7 +41,7 @@ def main(window, frame, gmodpath, assetspath, successcallback, abortcallback):
                 "A value is already set for cstrike.\nDo you want to overwrite it?\nCurrent value: "+parsed["mountcfg"]["cstrike"],
             )
             if not yn:
-                abort()
+                abort(abortcallback, window)
                 return
         parsed["mountcfg"]["cstrike"] = os.path.abspath(assetspath)
         f.seek(0)
