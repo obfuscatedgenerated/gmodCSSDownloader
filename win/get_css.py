@@ -111,6 +111,8 @@ def main(
         frame, height=15, width=50, background="black", foreground="white"
     )
     poutputtext.pack()
+    poutputtext.bind("<Key>", lambda e: "break")
+    poutputtext.bind("<Button-1>", lambda e: "break")
     curr_window.update()
     asyncio.set_event_loop(asyncio.new_event_loop())
     asyncio.get_event_loop().run_until_complete(
