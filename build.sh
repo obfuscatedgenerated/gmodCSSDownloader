@@ -9,3 +9,4 @@ pyinstaller ./spec/gmodCSSDownloader.spec
 cksum dist/gmodCSSDownloader | awk '{print $1}' > dist/checksum.txt
 # let Python be unpredictable again
 unset PYTHONHASHSEED
+unset SOURCE_DATE_EPOCH
