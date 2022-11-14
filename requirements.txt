@@ -1,3 +1,4 @@
 vdf==3.4
 requests>=2.27.1
 pyinstaller>=4.8
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
