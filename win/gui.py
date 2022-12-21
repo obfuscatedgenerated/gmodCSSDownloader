@@ -13,13 +13,13 @@ regtypeReverseLookup = [
     "REG_EXPAND_SZ",
     "REG_BINARY",
     "REG_DWORD_LITTLE_ENDIAN",
-    "REG_DWORD_BIGENDIAN",
+    "REG_DWORD_BIG_ENDIAN",
     "REG_LINK",
     "REG_MULTI_SZ",
     "REG_RESOURCE_LIST",
     "REG_FULL_RESOURCE_DESCRIPTOR",
     "REG_RESOURCE_REQUIREMENTS_LIST",
-    "REG_QWORD_LITTLE_ENDIAN",
+    "REG_QWORD_LITTLE_ENDIAN", # remove this if you use Python under 3.6
 ]  # REG_DWORD defaults to REG_DWORD_LITTLE_ENDIAN, REG_QWORD defaults to REG_QWORD_LITTLE_ENDIAN
 
 if __name__ == "__main__":
