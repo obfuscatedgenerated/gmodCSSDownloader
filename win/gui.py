@@ -6,7 +6,7 @@ import winreg
 import os
 import vdf
 
-
+# this is only used for stdout/stderr, so it doesn't matter too much if it's not up to date
 regtypeReverseLookup = [
     "REG_NONE",
     "REG_SZ",
