@@ -98,7 +98,7 @@ def find_gmod():
                     open(reg_value[0] + "/steamapps/libraryfolders.vdf", "r")
                 )
                 libfolders = parsed["libraryfolders"]
-                del libfolders["contentstatsid"]
+                #del libfolders["contentstatsid"] # was previously needed, but no longer
                 # Search for Garry's Mod ID
                 for lf in libfolders:
                     print("Searching in " + libfolders[lf]["path"] + "...")
