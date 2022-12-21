@@ -1,6 +1,6 @@
 # gmodCSSDownloader
 
-A small program that uses SteamCMD to install CS:Source assets for Garry's Mod easily, quickly and legally (note that I am not a lawayer).
+A small program that uses SteamCMD to install CS:Source assets for Garry's Mod easily, quickly and legally (note that I am not a lawyer).
 
 ## Platform Support
 
